@@ -1,3 +1,12 @@
+/*
+ CMPT_1209 Lab Proj
+ Group members:
+ Chris gursche
+ Sarah Vaily
+ Han Win Tun
+ Jaoquin
+
+ */
 
 #include "Fractal.hpp"
 #include "Pixel.hpp"
@@ -6,8 +15,9 @@ using namespace std;
 
 Fractal testMoveConstructor(unsigned int rows, unsigned int cols)
 {
+    Fractal&& temp = Fractal(rows, cols);
     
-    return Fractal(rows, cols);
+    return  temp;
 }
 
 int main()

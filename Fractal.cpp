@@ -4,22 +4,21 @@
 #include <string.h>
 #include <cmath>
 #include <algorithm>
+  
 #include "Fractal.hpp"
 #include "Pixel.hpp"
 
 using namespace std;
 
 
-
-
 	Pixel Fractal::determinePixelColor(Complex Z)
 	{
 		Complex Znew;
-		float tol = 1E-6;
-		float diff = 1.0;
-		float test = sqrt(3.0) / 2.0;
+		double tol = 1E-6;
+        double diff = 1.0;
+        double test = sqrt(3.0) / 2.0;
 		unsigned int iter = 0U;
-		int color = 0;
+        unsigned int color = 0U;
 		while (iter < 512)
 		{
 			iter++;
@@ -69,7 +68,7 @@ using namespace std;
 
 Fractal::~Fractal()
 	{
-		cout << "> Fractal destructor " << endl;
+		cout << "> Destructor called... " << endl;
 		//delete the first pointer
 		for (int i = 0; i < rows; i++)
 			delete[] grid[i];
@@ -79,15 +78,18 @@ Fractal::~Fractal()
 
 Fractal::Fractal() : cols(0), rows(0), grid(nullptr), maxIter(30)
 	{
-		cout << "> Fractal default constructor " << endl;
+		cout << "> Default constructor called... " << endl;
 	}
 
-Fractal::Fractal(const Fractal& f) : cols(f.cols), rows(f.rows), grid(nullptr), maxIter(f.maxIter)
+Fractal::Fractal(const Fractal& f) : maxIter(30)
 	{
-		cout << "> Fractal Copy constructor " << endl;
-		if (grid != nullptr)
-			for (int i = 0; i < rows; i++)
-				delete[] grid[i];
+		cout << "> Copy constructor called... " << endl;
+        
+      
+        
+      
+        cols = f.cols;
+        rows = f.rows;
 
 		grid = new Pixel * [rows];
 
@@ -98,18 +100,33 @@ Fractal::Fractal(const Fractal& f) : cols(f.cols), rows(f.rows), grid(nullptr), 
 		for (int i = 0; i < rows; i++)
 			for (int j = 0; j < cols; j++)
 				grid[i][j] = f.grid[i][j];
+        
+        
 	}
 
-Fractal::Fractal(Fractal&& f): cols(f.cols), rows(f.rows), grid(nullptr), maxIter(30)
+Fractal::Fractal(Fractal&& f): cols(f.cols), rows(f.rows), maxIter(30)
 	{
-		cout << "> Fractal Move constructor " << endl;
-		//dynamically allocate mem for grid
-		grid = f.grid;
-		for (int i = 0; i < rows; i++)
-		{
-			f.grid[i] = nullptr;
-		}
-		f.grid = nullptr;
+		cout << "> Move constructor called..." << endl;
+        
+       
+        
+        grid = new Pixel * [rows];
+
+        for (int i = 0; i < rows; i++)
+        {
+            grid[i] = new Pixel[cols];
+        }
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < cols; j++)
+                grid[i][j] = f.grid[i][j];
+        
+        
+            for (int i = 0; i < rows; i++)
+            {
+                f.grid[i] = nullptr;
+            }
+            f.grid = nullptr;
+        
 		f.cols = 0;
 		f.rows = 0;
 
@@ -119,16 +136,23 @@ Fractal::Fractal(Fractal&& f): cols(f.cols), rows(f.rows), grid(nullptr), maxIte
 Fractal::Fractal(unsigned int r, unsigned int c) : rows(r), cols(c), grid(nullptr), maxIter(30)
 	{
         
-		cout << "> Fractal 2-args constructor " << endl;
+		cout << "> Two-arg constructor called... " << endl;
+        
+        // clean
+        if (grid != nullptr)
+        {
+            for (int i = 0; i < rows; i++)
+                delete[] grid[i];
+            delete[] grid;
+        }
+        
 		//dynamically allocate mem for grid
-		grid = new Pixel * [rows];//grid - ** Pixel, 
-		//each row point to a col
+		grid = new Pixel * [rows];
+        
 		for (int i = 0; i < rows; i++)
 		{
-			grid[i] = new Pixel[cols];//grid[i] = new Pixel[columns]
-			//each Pixel element of array columns will be assigned with Pixel object from determinePixelValue()
+			grid[i] = new Pixel[cols];
 		}
-		//makeNewtonFractals;
 		cout << "> Now creating the Newton Fractal.." << endl;
 		Complex Z;
 		double step_height = 4.0 / rows;
@@ -140,8 +164,7 @@ Fractal::Fractal(unsigned int r, unsigned int c) : rows(r), cols(c), grid(nullpt
 			{
 				Z["imag"] = 2.0 - (j * step_height);
 				Z["real"] = (k * step_width) - 2.0;
-				//cout << "debug in makeNewtonFractal - Z value " << Z << endl;
-				grid[j][k] = determinePixelColor(Z);//grid[j][k] = Pixel(a,b,c) - 3 arg constructor
+				grid[j][k] = determinePixelColor(Z);
            
                 
 			}
@@ -150,14 +173,14 @@ Fractal::Fractal(unsigned int r, unsigned int c) : rows(r), cols(c), grid(nullpt
 
 	const Fractal& Fractal::operator=(const Fractal& f)
 	{
-		cout << "> Fractal Assignment operator " << endl;
+		cout << "> Assignment operator called... " << endl;
 
 		if (this != &f)
 		{
 			cols = f.cols;
 			rows = f.rows;
 			
-			//if grid is not pointing to null, point it to null
+			// clean
 			if (grid != nullptr)
 			{
 				for (int i = 0; i < rows; i++)
@@ -165,10 +188,10 @@ Fractal::Fractal(unsigned int r, unsigned int c) : rows(r), cols(c), grid(nullpt
 				delete[] grid;
 			}
 			//dynamically allocate mem for grid
-			grid = new Pixel * [rows]; //cols is width and row is height
+			grid = new Pixel * [rows];
 			for (int i = 0; i < rows; i++)
 			{
-				grid[i] = new Pixel[cols];//an array of cols Pixel object that carries r g b values
+				grid[i] = new Pixel[cols];
 			}
 			//deep copy 
 			for (int i = 0; i < rows; i++)
@@ -182,7 +205,7 @@ Fractal::Fractal(unsigned int r, unsigned int c) : rows(r), cols(c), grid(nullpt
 	Fractal& Fractal::operator=(Fractal&& f)
 	{
         
-		cout << "> Fractal Move assignment operator" << endl;
+		cout << "> Move assignment operator called..." << endl;
 		if (this != &f)
 		{
             swap(rows, f.rows);
@@ -197,7 +220,13 @@ Fractal::Fractal(unsigned int r, unsigned int c) : rows(r), cols(c), grid(nullpt
 
 
 ostream& operator<<(ostream& os, Pixel& p) {
-    os << p["red"] << " " << p["green"] << " " << p["blue"] << " ";
+    try
+    {
+        os << p["red"] << " " << p["green"] << " " << p["blue"] << " ";
+    }
+    catch (Pixel::InputOutOfBoundsException err){
+        throw;
+    }
     return os;
 }
 
@@ -209,10 +238,10 @@ ostream& operator<<(ostream& os, Pixel& p) {
 
 		if (!file)
 		{
-			cout << "Error: Output file can not be open" << endl;
+			cout << "Error: Output file can not be opened. " << endl;
 			exit(1);
 		}
-		cout << "Saving Fractal object to PPM file.." << endl;
+		cout << "> Saving Fractal object to PPM file.. " << endl;
 		//Output header
 		file << "P3" << endl << "# Newton Fractal project\n" << f.cols << " " << f.rows << endl << f.maxIter << endl;
         

@@ -28,22 +28,22 @@ Pixel::~Pixel()
 	}
 
 
-	const unsigned int& Pixel::operator[](const char* a)
+	const unsigned int& Pixel::operator[](const char* i)
 	{
-		if (strcmp(a, "red") == 0)
+		if (strcmp(i, "red") == 0)
 		{
 			return red;
 		}
-		else if (strcmp(a, "blue") == 0)
+		else if (strcmp(i, "blue") == 0)
 		{
 			return blue;
 		}
-		else if (strcmp(a, "green") == 0)
+		else if (strcmp(i, "green") == 0)
 		{
 			return green;
 		}
 		{
-			throw InputOutOfBoundsException("> Error: Index out of bound", a);//construct an InputOutOfBoundException object
+			throw InputOutOfBoundsException("> Error: Index out of bound", i);
 		}
 	}
 

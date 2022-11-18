@@ -13,9 +13,7 @@ using namespace std;
 	}
 
 
-	//HOW DO I CONVERT A DOUBLE INTO A COMPLEX NUMBER? 
-	//example, passing in a sqrt(-9)
-    Complex::Complex(double a) : real(a), imag(0.0)//PROBLEM 1: HOW TO IMPLEMENT THIS ?
+    Complex::Complex(double a) : real(a), imag(0.0)
 	{
 	}
 
@@ -69,7 +67,7 @@ using namespace std;
 		double r = ((a.real * b.real + a.imag * b.imag) /
 			(b.real * b.real + b.imag * b.imag));
 		return Complex(i, r);
-		//    temp.image = image * c2.real+c2.image*real;
+		
 
 	}
 	const Complex operator-(const Complex& a, const Complex& b)
@@ -90,7 +88,6 @@ using namespace std;
 
 	double getMagnitude(const Complex& c)
 	{
-		//Problem might lie here
 
 		return abs(sqrt((c.real * c.real) + (c.imag * c.imag)));
 	}
